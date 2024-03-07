@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import React from "react";
 
 import { QueryProvider } from "@/contexts";
-import { datadogService } from "@/services/datadog";
+import { datadogService } from "@/services";
 
 import "./globals.css";
 
@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   datadogService();
   return (
-    <html lang='en'>
+    <html lang='ko-KR'>
       <body className='min-w-screen flex min-h-screen justify-center'>
         <QueryProvider>{children}</QueryProvider>
       </body>
