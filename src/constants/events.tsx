@@ -1,4 +1,4 @@
-import OG_First from "@/public/images/og/1.png";
+import OG_First from "@/public/images/OG.png";
 
 export const Events = [
   {
