@@ -66,7 +66,7 @@ export default function About() {
       </div>
 
       <div className='max-w-4xl'>
-        <span className='text-5xl font-Tossface'>🙋🏻</span>
+        <span className='text-5xl font-Tossface'>🙋🏻‍♂️</span>
         <Paragraph className='mt-4'>안녕하세요! 여행을 좋아하는 개발자 윤창현 입니다.</Paragraph>
         <Paragraph className='mt-4'>
           저는 커뮤니티의 중요성을 믿고 커뮤니티 속에서의 성장을 위해 노력하고 있습니다.

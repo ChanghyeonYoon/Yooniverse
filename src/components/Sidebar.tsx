@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import { Badge } from "@/src/components/Badge";
+import { LinkPreview } from "@/src/components/LinkPreview";
 import { navlinks } from "@/src/constants/navlinks";
 import { prefix } from "@/src/constants/prefix";
 import { COMMUNITY_LINKS, LINKS } from "@/src/constants/socials";
@@ -21,6 +22,7 @@ import { Heading } from "./Heading";
 
 export const Sidebar = () => {
   const [open, setOpen] = useState(!isMobile());
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleResize = () => {
@@ -46,7 +48,10 @@ export const Sidebar = () => {
               <Navigation setOpen={setOpen} />
             </div>
             <div onClick={() => isMobile() && setOpen(false)}>
-              <Badge href='/resume' text='Resume' />
+              <Badge
+                href={pathname === "/resume" ? "/projects" : "/resume"}
+                text={pathname === "/resume" ? "Projects / Portfolio" : "Resume"}
+              />
             </div>
           </motion.div>
         )}
@@ -88,34 +93,32 @@ export const Navigation = ({ setOpen }: { setOpen: React.Dispatch<React.SetState
         Links
       </Heading>
       {LINKS.map((link: Navlink) => (
-        <Link
-          key={link.href}
-          href={link.href}
-          target={"_blank"}
-          className={twMerge(
-            "text-secondary hover:text-primary transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm",
-          )}
-        >
-          <link.icon className={twMerge("h-4 w-4 flex-shrink-0", isActive(link.href) && "text-sky-500")} />
-          <span className='whitespace-pre-wrap'>{link.label}</span>
-        </Link>
+        <LinkPreview url={link.href} key={link.href}>
+          <div
+            className={twMerge(
+              "text-secondary hover:text-primary transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm",
+            )}
+          >
+            <link.icon className={twMerge("h-4 w-4 flex-shrink-0", isActive(link.href) && "text-sky-500")} />
+            <span className='whitespace-pre-wrap'>{link.label}</span>
+          </div>
+        </LinkPreview>
       ))}
 
       <Heading as='p' className='text-sm md:text-sm lg:text-sm pt-10 px-2'>
         Community
       </Heading>
       {COMMUNITY_LINKS.map((link: Navlink) => (
-        <Link
-          key={link.href}
-          href={link.href}
-          target={"_blank"}
-          className={twMerge(
-            "text-secondary hover:text-primary transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm",
-          )}
-        >
-          <link.icon className={twMerge("h-4 w-4 flex-shrink-0", isActive(link.href) && "text-sky-500")} />
-          <span className='whitespace-pre-wrap'>{formatLabel(link.label)}</span>
-        </Link>
+        <LinkPreview url={link.href} key={link.href}>
+          <div
+            className={twMerge(
+              "text-secondary hover:text-primary transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm",
+            )}
+          >
+            <link.icon className={twMerge("h-4 w-4 flex-shrink-0", isActive(link.href) && "text-sky-500")} />
+            <span className='whitespace-pre-wrap'>{formatLabel(link.label)}</span>
+          </div>
+        </LinkPreview>
       ))}
     </div>
   );

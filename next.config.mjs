@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 
 const nextConfig = {
   images: {
+    domains: ["api.microlink.io"],
     formats: ["image/avif", "image/webp"],
   },
   compiler: {
