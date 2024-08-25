@@ -20,7 +20,7 @@ export default function Home() {
         className='object-cover object-middle rounded-xl flex-shrink-0 w-52 h-52 mb-5'
       />
       <div className='flex items-center gap-2'>
-        <span className='text-4xl'>🇰🇷</span>
+        <span className='text-4xl font-Tossface'>🇰🇷</span>
         <Heading className='font-black'>Changhyeon (Kevin) Yoon</Heading>
       </div>
       <Paragraph className='max-w-xl mt-5'>
