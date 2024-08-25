@@ -10,6 +10,8 @@ export const Monitoring = ({ children }: { children: React.ReactNode }) => {
   React.useEffect(() => {
     if (!process.env.NEXT_PUBLIC_DATADOG_APPLICATION_ID || !process.env.NEXT_PUBLIC_DATADOG_CLIENT_TOKEN) return;
 
+    if (process.env.NODE_ENV === "development") return;
+
     datadogRum.init({
       applicationId: process.env.NEXT_PUBLIC_DATADOG_APPLICATION_ID,
       clientToken: process.env.NEXT_PUBLIC_DATADOG_CLIENT_TOKEN,
