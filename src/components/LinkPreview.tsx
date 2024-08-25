@@ -5,7 +5,7 @@ import Link from "next/link";
 import React from "react";
 
 import * as HoverCardPrimitive from "@radix-ui/react-hover-card";
-import { cn } from "@/src/lib/utils";
+import { cn, isMobile } from "@/src/lib/utils";
 import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion";
 import { encode } from "qss";
 import { twMerge } from "tailwind-merge";
@@ -43,10 +43,10 @@ export const LinkPreview = ({
       meta: false,
       embed: "screenshot.url",
       colorScheme: "dark",
-      "viewport.isMobile": true,
+      "viewport.isMobile": isMobile(),
       "viewport.deviceScaleFactor": 1,
-      "viewport.width": width * 3,
-      "viewport.height": height * 3,
+      "viewport.width": isMobile() ? 1280 : 1920,
+      "viewport.height": isMobile() ? 720 : 1080,
     });
     src = `https://api.microlink.io/?${params}`;
   } else {
