@@ -24,7 +24,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover'
         />
         <meta name='author' content='Changhyeon (Kevin) Yoon 윤창현' />
-        <meta name='naver-site-verification' content='b1bcf4aaecd724b5f64604735aef22bfc146a5a3' />
         <meta name='robots' content='index,follow' />
         <meta property='og:type' content='website' />
         <link rel='apple-touch-icon' sizes='57x57' href={`${prefix}/apple-icon-57x57.png`} />
