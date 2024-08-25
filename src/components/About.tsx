@@ -4,11 +4,8 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import React from "react";
 
-import { Card, Carousel } from "@/src/components/Carousel";
 import { Heading } from "@/src/components/Heading";
-import { Highlight } from "@/src/components/Highlight";
 import { Paragraph } from "@/src/components/Paragraph";
-import { Families } from "@/src/constants/families";
 import { prefix } from "@/src/constants/prefix";
 import { motion } from "framer-motion";
 import { ImageDecorator } from "react-viewer/lib/ViewerProps";
@@ -16,10 +13,10 @@ import { ImageDecorator } from "react-viewer/lib/ViewerProps";
 const Viewer = dynamic(() => import("react-viewer"), { ssr: false });
 
 const images = [
-  `${prefix}/images/about_1.jpeg`,
-  `${prefix}/images/about_2.jpeg`,
-  `${prefix}/images/about_3.jpeg`,
-  `${prefix}/images/about_4.jpeg`,
+  `${prefix}/images/about/about_1.jpeg`,
+  `${prefix}/images/about/about_2.jpeg`,
+  `${prefix}/images/about/about_3.jpeg`,
+  `${prefix}/images/about/about_4.jpeg`,
 ];
 
 export default function About() {
