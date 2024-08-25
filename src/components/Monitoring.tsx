@@ -14,7 +14,7 @@ export const Monitoring = ({ children }: { children: React.ReactNode }) => {
       applicationId: process.env.NEXT_PUBLIC_DATADOG_APPLICATION_ID,
       clientToken: process.env.NEXT_PUBLIC_DATADOG_CLIENT_TOKEN,
       site: "datadoghq.com",
-      service: "datadogkrug",
+      service: "yooniverse",
       env: process.env.NODE_ENV,
       sessionSampleRate: 100,
       sessionReplaySampleRate: 100,
