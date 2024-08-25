@@ -9,9 +9,14 @@ import { Paragraph } from "@/src/components/Paragraph";
 import { getAllBlogs } from "@/lib/getAllBlogs";
 
 export const metadata: Metadata = {
-  title: "Blogs | DatadogKRUG",
-  description: "DatadogKRUG의 블로그입니다. 각종 정보 및 밋업 자료를 공유합니다.",
-  openGraph: DefaultOpenGraph,
+  title: "윤창현 - 블로그",
+  description: "블로그 - Blog",
+  openGraph: {
+    ...DefaultOpenGraph,
+    url: "https://changhyeon.net/blog",
+    title: "윤창현 | Changhyeon (Kevin) Yoon",
+    description: "블로그 - Blog",
+  },
 };
 
 export default async function Blog() {
@@ -20,12 +25,10 @@ export default async function Blog() {
 
   return (
     <Container>
-      <span className='text-4xl'>📝</span>
+      <span className='text-4xl font-Tossface'>🖌️</span>
       <Heading className='font-black pb-4'>Blog</Heading>
-      <Paragraph className='text-slate-800'>DatadogKRUG의 블로그입니다. 각종 정보 및 밋업 자료를 공유합니다.</Paragraph>
-      <Paragraph className='pb-10'>
-        Here is the blog of DatadogKRUG. Various information and meetup speaker deck are shared.
-      </Paragraph>
+      <Paragraph className='text-slate-800'>개발과 관련된 내용 뿐 아니라 여러 주제에 대한 글을 공유합니다.</Paragraph>
+
       <Blogs blogs={data} />
     </Container>
   );

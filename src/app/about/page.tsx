@@ -9,7 +9,7 @@ import { Heading } from "@/src/components/Heading";
 import { prefix } from "@/src/constants/prefix";
 
 export const metadata: Metadata = {
-  title: "윤창현 | Changhyeon (Kevin) Yoon",
+  title: "윤창현 - 소개",
   description:
     "안녕하세요! 여행을 좋아하는 개발자 윤창현 입니다. Hello! I'm Changhyeon (Kevin) Yoon, a developer who loves to travel.",
   openGraph: {

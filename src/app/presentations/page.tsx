@@ -6,23 +6,21 @@ import { Heading } from "@/src/components/Heading";
 import { Products } from "@/src/components/Products";
 
 export const metadata: Metadata = {
-  title: "윤창현 - 프로젝트 & 포트폴리오",
-  description: "프로젝트 & 포트폴리오 - Projects & Portfolio",
+  title: "윤창현 - 발표자료",
+  description: "발표자료 - Presentation",
   openGraph: {
     ...DefaultOpenGraph,
-    url: "https://changhyeon.net/projects",
+    url: "https://changhyeon.net/presentations",
     title: "윤창현 | Changhyeon (Kevin) Yoon",
-    description: "프로젝트 & 포트폴리오 - Projects & Portfolio",
+    description: "발표자료 - Presentation",
   },
 };
 
 export default function Projects() {
   return (
     <Container>
-      <span className='text-4xl font-Tossface'>🚀</span>
-      <Heading className='font-black mb-10'>Projects / Portfolio</Heading>
-
-      <Products />
+      <span className='text-4xl font-Tossface'>🗣️</span>
+      <Heading className='font-black mb-10'>발표자료 - Presentation</Heading>
     </Container>
   );
 }

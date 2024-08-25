@@ -1,11 +1,24 @@
+import { Metadata } from "next";
 import Image from "next/image";
 
+import { DefaultOpenGraph } from "@/src/app/shared-metadata";
 import { Container } from "@/src/components/Container";
 import { Heading } from "@/src/components/Heading";
 import { Highlight } from "@/src/components/Highlight";
 import { Paragraph } from "@/src/components/Paragraph";
 import { WorkHistory } from "@/src/components/WorkHistory";
 import { prefix } from "@/src/constants/prefix";
+
+export const metadata: Metadata = {
+  title: "윤창현 - 이력서",
+  description: "이력서 - Resume",
+  openGraph: {
+    ...DefaultOpenGraph,
+    url: "https://changhyeon.net/resume",
+    title: "윤창현 | Changhyeon (Kevin) Yoon",
+    description: "이력서 - Resume",
+  },
+};
 
 export default function Home() {
   return (
