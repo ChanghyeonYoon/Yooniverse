@@ -9,10 +9,16 @@ import { Heading } from "@/src/components/Heading";
 import { prefix } from "@/src/constants/prefix";
 
 export const metadata: Metadata = {
-  title: "About | DatadogKRUG",
+  title: "윤창현 | Changhyeon (Kevin) Yoon",
   description:
-    "DatadogKRUG (Datadog Korea User Group)은 Monitoring, Observability와 관련된 모든 주제에 대해서 지식을 교류하며 함께 성장하는 모임입니다.",
-  openGraph: DefaultOpenGraph,
+    "안녕하세요! 여행을 좋아하는 개발자 윤창현 입니다. Hello! I'm Changhyeon (Kevin) Yoon, a developer who loves to travel.",
+  openGraph: {
+    ...DefaultOpenGraph,
+    url: "https://changhyeon.net/about",
+    title: "윤창현 | Changhyeon (Kevin) Yoon",
+    description:
+      "안녕하세요! 여행을 좋아하는 개발자 윤창현 입니다. Hello! I'm Changhyeon (Kevin) Yoon, a developer who loves to travel.",
+  },
 };
 
 export default function AboutPage() {

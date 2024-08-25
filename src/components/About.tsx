@@ -68,36 +68,66 @@ export default function About() {
       <div className='max-w-4xl'>
         <span className='text-5xl font-Tossface'>🙋🏻</span>
         <Paragraph className='mt-4'>안녕하세요! 여행을 좋아하는 개발자 윤창현 입니다.</Paragraph>
-        <Paragraph className=' mt-4'>
-          Datadog뿐만 아니라 Datadog에서 사용할 수 있는 수많은 Integrations 들에 대한 내용도 공유할 수 있습니다. 누구나
-          참여해서 즐겁게 즐길 수 있는 분위기, 토론 및 질의응답, 네트워킹 하는 것을 지향합니다.
+        <Paragraph className='mt-4'>
+          저는 커뮤니티의 중요성을 믿고 커뮤니티 속에서의 성장을 위해 노력하고 있습니다.
+          <br />
+          혼자 앞만보고 달려가다 보면 지금 본인의 상황을 제대로 파악하지 못할 수 있습니다.
+          <br />
+          하지만 커뮤니티 속에서 다양한 사람들과 소통하고 지식을 공유하며 성장할 수 있다고 믿습니다.
         </Paragraph>
-        <Paragraph className=' mt-4'>
-          DatadogKRUG에 관심을 가져주셔서 감사드리며, 여러분에게 더욱 다양하고 도움이 되는 이벤트로 찾아뵙겠습니다.
+        <Paragraph className='mt-4'>
+          개발자로서 저는 코드 한줄마다 애착을 가지고 작성하려고 노력하고있습니다. <br />
+          애플의 철학 중&nbsp;
+          <i className='font-bold'>누구나 언제든지 편하고 자유롭게 쓸 수 있는 기술이야말로 가장 뛰어난 기술</i>
+          이라는 말이 있습니다.
+          <br />
+          저는 사용자를 넘어 뒤에서 작동하고 있는 코드까지&nbsp;
+          <i className='font-bold'>누구나 언제든지 편하고 자유롭게 수정 및 활용할 수 있는 코드</i>를 작성하기 위해
+          노력합니다.
         </Paragraph>
-        <br />
-        <Paragraph className=' mt-4'>
-          <Highlight>DatadogKRUG (Datadog Korea User Group)</Highlight> is a group that shares knowledge and grows
-          together on all topics related to Monitoring and Observability.
+        <Paragraph className='mt-4'>
+          <i className='font-bold'>최고의 복지는 동료다</i>&nbsp;라는 말이 있습니다.
+          <br />
+          한 조직의 구성원으로서 높은 책임감과 열정을 가지고 누군가에게 도움이 되는 동료가 되고싶습니다. <br />
         </Paragraph>
-        <Paragraph className=' mt-4'>
-          In addition to Datadog, we also share content about the numerous integrations that can be used with Datadog.
-          We aim to create an enjoyable atmosphere where anyone can participate, discuss, ask questions, and network.
+        <div className='bg-slate-400 w-full h-px my-10' />
+
+        <Paragraph>Hello! I&apos;m Kevin, a developer who loves to travel.</Paragraph>
+        <Paragraph className='mt-4'>
+          I believe in the importance of community and strive for growth within it.
+          <br />
+          If you run alone without looking around, you may not be able to properly grasp your current situation.
+          <br />
+          However, I believe that you can grow by communicating and sharing knowledge with various people within the
+          community.
+        </Paragraph>
+        <Paragraph className='mt-4'>
+          As a developer, I try to write each line of code with affection. <br />
+          Among Apple&apos;s philosophies, there is a saying that&nbsp;
+          <i className='font-bold'>
+            the best technology is the one that anyone can use freely and comfortably at any time
+          </i>
+          .
+          <br />I strive to write code that&nbsp;
+          <i className='font-bold'>anyone can freely modify and utilize at any time</i>, beyond just the users, but also
+          the code working behind the scenes.
+        </Paragraph>
+        <Paragraph className='mt-4'>
+          There is a saying that&nbsp;<i className='font-bold'>the best welfare is colleagues</i>.
+          <br />
+          As a member of an organization, I want to be a colleague who helps others with high responsibility and
+          passion. <br />
         </Paragraph>
 
-        <Paragraph className=' mt-4'>
-          Thank you for your interest in DatadogKRUG, and we look forward to bringing you more diverse and helpful
-          events.
-        </Paragraph>
-
-        <Heading as='h2' className='font-black text-lg md:text-xl lg:text-2xl mt-20 mb-4'>
-          Family Sites
-        </Heading>
-        <Carousel
-          items={Families.filter((family) => !family.isOnlySideBar).map((card, index) => (
-            <Card key={card.src} card={card} index={index} />
-          ))}
-        />
+        <div className='flex items-center mt-20 mb-4'>
+          <span className='font-black text-lg md:text-xl lg:text-2xl font-Tossface mr-2'>✈️</span>
+          <Heading as='h2' className='font-black text-lg md:text-xl lg:text-2xl'>
+            World Traveler
+          </Heading>
+        </div>
+        <span className='font-black text-lg md:text-xl lg:text-2xl font-Tossface tracking-widest'>
+          🇺🇸🇬🇧🇫🇷🇨🇿🇦🇹🇭🇺🇨🇭🇸🇦🇻🇳🇵🇭🇯🇵
+        </span>
       </div>
       <Viewer
         visible={visible}
