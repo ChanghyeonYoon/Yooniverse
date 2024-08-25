@@ -153,17 +153,18 @@ export const products = [
     content: <div></div>,
   },
   {
-    href: "https://changhyeon.net",
-    title: "Yooniverse 개인블로그",
+    href: "https://v1.changhyeon.net",
+    title: "Yooniverse 개인블로그 - v1",
     created_at: "2024-08-25 00:00:00",
     modified_at: "2024-08-25 00:00:00",
-    description: "Yooniverse 개인 블로그",
+    description: "Yooniverse 개인 블로그 - v1",
     thumbnail: YooniverseV1Thumbnail,
     images: [YooniverseV1Thumbnail],
     stack: ["TypeScript", "Nextjs", "Tailwindcss"],
     slug: "blog",
     content: (
       <div>
+        <p>지금 보고 있는 블로그가 아닌 v1 버전의 블로그 </p>
         <ul className='space-y-4 list-disc'>
           <li>
             <p>
@@ -181,8 +182,6 @@ export const products = [
               </ul>
             </p>
           </li>
-
-          <p className='text-xl'>V2 Migration</p>
         </ul>
       </div>
     ),
