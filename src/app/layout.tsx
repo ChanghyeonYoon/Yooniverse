@@ -17,16 +17,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang='en'>
       <head>
-        <meta charSet='utf-8'/>
-        <meta httpEquiv='Content-Type' content='text/html; charset=utf-8'/>
+        <meta charSet='utf-8' />
+        <meta httpEquiv='Content-Type' content='text/html; charset=utf-8' />
         <meta
-            name='viewport'
-            content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover'
+          name='viewport'
+          content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover'
         />
-        <meta name='author' content="Changhyeon (Kevin) Yoon 윤창현"/>
+        <meta name='author' content='Changhyeon (Kevin) Yoon 윤창현' />
 
-        <meta name='robots' content='index,follow'/>
-        <meta property='og:type' content='website'/>
+        <meta name='robots' content='index,follow' />
+        <meta property='og:type' content='website' />
         <link rel='apple-touch-icon' sizes='57x57' href={`${prefix}/apple-icon-57x57.png`} />
         <link rel='apple-touch-icon' sizes='60x60' href={`${prefix}/apple-icon-60x60.png`} />
         <link rel='apple-touch-icon' sizes='72x72' href={`${prefix}/apple-icon-72x72.png`} />

@@ -22,7 +22,8 @@ const config: Config = {
       },
       fontFamily: {
         Tossface: ["Tossface", "sans-serif"],
-        Pretendard: ["Pretendard", "sans-serif"],
+        Poppins: ["Poppins", "sans-serif"],
+        AppleSDGothicNeo: ["Apple SD Gothic Neo", "sans-serif"],
       },
     },
   },

@@ -4,7 +4,7 @@ import React from "react";
 import { twMerge } from "tailwind-merge";
 
 const AppleSDGothic = localFont({
-  src: [{ path: "../../fonts/AppleSDGothicNeoSB.ttf" }],
+  src: [{ path: "../../public/fonts/AppleSDGothicNeoSB.ttf" }],
   display: "swap",
 });
 

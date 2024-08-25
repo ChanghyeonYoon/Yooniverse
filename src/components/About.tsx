@@ -66,8 +66,8 @@ export default function About() {
       </div>
 
       <div className='max-w-4xl'>
-        <span className='text-5xl !font-Tossface'>🙋🏻</span>
-        <Paragraph className='font-Tossface mt-4'>안녕하세요! 여행을 좋아하는 개발자 윤창현 입니다.</Paragraph>
+        <span className='text-5xl font-Tossface'>🙋🏻</span>
+        <Paragraph className='mt-4'>안녕하세요! 여행을 좋아하는 개발자 윤창현 입니다.</Paragraph>
         <Paragraph className=' mt-4'>
           Datadog뿐만 아니라 Datadog에서 사용할 수 있는 수많은 Integrations 들에 대한 내용도 공유할 수 있습니다. 누구나
           참여해서 즐겁게 즐길 수 있는 분위기, 토론 및 질의응답, 네트워킹 하는 것을 지향합니다.
