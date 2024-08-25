@@ -20,6 +20,10 @@ const config: Config = {
         secondary: "var(--neutral-500)",
         datadogPrimary: "#632CA6",
       },
+      fontFamily: {
+        Tossface: ["Tossface", "sans-serif"],
+        Pretendard: ["Pretendard", "sans-serif"],
+      },
     },
   },
   plugins: [require("@tailwindcss/typography"), addVariablesForColors],

@@ -28,6 +28,7 @@
     "react-viewer": "^3.2.2",
     "remark-gfm": "^4.0.0",
     "rss": "^1.2.2",
+    "sharp": "^0.33.5",
     "tailwind-merge": "^2.5.2"
   },
   "devDependencies": {

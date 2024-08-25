@@ -19,13 +19,13 @@ export default function AboutPage() {
   return (
     <Container>
       <Image
-        src={`${prefix}/images/logos/logo.png`}
+        src={`${prefix}/images/profile.jpg`}
         alt='Avatar'
         height='100'
         width='100'
         className='object-cover object-top rounded-full flex-shrink-0'
       />
-      <Heading className='font-black'>DatadogKRUG</Heading>
+      <Heading className='font-black mt-5'>윤창현 - Changhyeon (Kevin) Yoon</Heading>
       <About />
     </Container>
   );

@@ -9,16 +9,17 @@ import { Heading } from "@/src/components/Heading";
 import { Highlight } from "@/src/components/Highlight";
 import { Paragraph } from "@/src/components/Paragraph";
 import { Families } from "@/src/constants/families";
+import { prefix } from "@/src/constants/prefix";
 import { motion } from "framer-motion";
 import { ImageDecorator } from "react-viewer/lib/ViewerProps";
 
 const Viewer = dynamic(() => import("react-viewer"), { ssr: false });
 
 const images = [
-  "https://imgix.datadoghq.com//img/about/presskit/Datadog_Lobby.jpg?dpr=2&auto=format&_gl=1*ta49n*_gcl_aw*R0NMLjE3MjM2MTYyMjYuQ2owS0NRandpT3kxQmhEQ0FSSXNBREd2UW5BamV5UUgtS21XLWpiMTFSeER5d3R2UFdqT1FFV2N1c3l3M1VsLVlZVWw3d09ac0FZMlhSZ2FBbWQ2RUFMd193Y0I.*_gcl_au*MjA4OTEyNjU1My4xNzIxNjk2OTU0*_ga*MTAwODU1ODQ5Mi4xNzIxNjM2Njkx*_ga_KN80RDFSQK*MTcyMzg4Mjg1Mi4yNi4wLjE3MjM4ODI4ODkuMC4wLjE3MDAxMzg3NjQ.",
-  "https://imgix.datadoghq.com//img/about/presskit/Bits_Mascot.jpg?dpr=2&auto=format&_gl=1*ta49n*_gcl_aw*R0NMLjE3MjM2MTYyMjYuQ2owS0NRandpT3kxQmhEQ0FSSXNBREd2UW5BamV5UUgtS21XLWpiMTFSeER5d3R2UFdqT1FFV2N1c3l3M1VsLVlZVWw3d09ac0FZMlhSZ2FBbWQ2RUFMd193Y0I.*_gcl_au*MjA4OTEyNjU1My4xNzIxNjk2OTU0*_ga*MTAwODU1ODQ5Mi4xNzIxNjM2Njkx*_ga_KN80RDFSQK*MTcyMzg4Mjg1Mi4yNi4wLjE3MjM4ODI4ODkuMC4wLjE3MDAxMzg3NjQ.",
-  "https://imgix.datadoghq.com//img/about/presskit/Datadog_NYCView.jpg?dpr=2&auto=format&_gl=1*ta49n*_gcl_aw*R0NMLjE3MjM2MTYyMjYuQ2owS0NRandpT3kxQmhEQ0FSSXNBREd2UW5BamV5UUgtS21XLWpiMTFSeER5d3R2UFdqT1FFV2N1c3l3M1VsLVlZVWw3d09ac0FZMlhSZ2FBbWQ2RUFMd193Y0I.*_gcl_au*MjA4OTEyNjU1My4xNzIxNjk2OTU0*_ga*MTAwODU1ODQ5Mi4xNzIxNjM2Njkx*_ga_KN80RDFSQK*MTcyMzg4Mjg1Mi4yNi4wLjE3MjM4ODI4ODkuMC4wLjE3MDAxMzg3NjQ.",
-  "https://imgix.datadoghq.com//img/about/presskit/Datadog_Alerts.png?dpr=2&_gl=1*cb3vvl*_gcl_aw*R0NMLjE3MjM2MTYyMjYuQ2owS0NRandpT3kxQmhEQ0FSSXNBREd2UW5BamV5UUgtS21XLWpiMTFSeER5d3R2UFdqT1FFV2N1c3l3M1VsLVlZVWw3d09ac0FZMlhSZ2FBbWQ2RUFMd193Y0I.*_gcl_au*MjA4OTEyNjU1My4xNzIxNjk2OTU0*_ga*MTAwODU1ODQ5Mi4xNzIxNjM2Njkx*_ga_KN80RDFSQK*MTcyMzg4NzAzNC4yNy4wLjE3MjM4ODcwMzQuMC4wLjQ4NjUyODcwNQ..*_fplc*dGdqQjFTNHIxbUFsZ3IzR3FQZEdaQXRTJTJGb29UUmdNWEdZSGFwZDZzek9peFZjSTNXdVJuem1hdThjeU9jZjZkNkRacWtIWldybSUyRmhoJTJCdkVCVDJabGFkTFYxdXJDVEVydHp6QmlaNVJyUkJXaWdlV1llZ2haSk5Ob2llVW9RJTNEJTNE",
+  `${prefix}/images/about_1.jpeg`,
+  `${prefix}/images/about_2.jpeg`,
+  `${prefix}/images/about_3.jpeg`,
+  `${prefix}/images/about_4.jpeg`,
 ];
 
 export default function About() {
@@ -65,10 +66,8 @@ export default function About() {
       </div>
 
       <div className='max-w-4xl'>
-        <Paragraph className=' mt-4'>
-          <Highlight>DatadogKRUG (Datadog Korea User Group)</Highlight>은 Monitoring, Observability와 관련된 모든 주제에
-          대해서 지식을 교류하며 함께 성장하는 모임입니다.
-        </Paragraph>
+        <span className='text-5xl !font-Tossface'>🙋🏻</span>
+        <Paragraph className='font-Tossface mt-4'>안녕하세요! 여행을 좋아하는 개발자 윤창현 입니다.</Paragraph>
         <Paragraph className=' mt-4'>
           Datadog뿐만 아니라 Datadog에서 사용할 수 있는 수많은 Integrations 들에 대한 내용도 공유할 수 있습니다. 누구나
           참여해서 즐겁게 즐길 수 있는 분위기, 토론 및 질의응답, 네트워킹 하는 것을 지향합니다.

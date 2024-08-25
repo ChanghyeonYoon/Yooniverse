@@ -4,31 +4,31 @@ import nextMDX from "@next/mdx";
 import remarkGfm from "remark-gfm";
 
 const nextConfig = {
-    images: {
-        domains: ["imgix.datadoghq.com"],
-    },
-    compiler: {
-        removeConsole: process.env.NODE_ENV === "production",
-    },
-    experimental: {
-        mdxRs: true,
-    },
-    webpack: (config) => {
-        config.module.rules.push({
-            test: /\.svg$/,
-            use: ["@svgr/webpack"],
-        });
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
+  experimental: {
+    mdxRs: true,
+  },
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ["@svgr/webpack"],
+    });
 
-        return config;
-    },
+    return config;
+  },
 };
 
 const withMDX = nextMDX({
-    extension: /\.mdx?$/,
-    options: {
-        remarkPlugins: [remarkGfm],
-        rehypePlugins: [rehypePrism],
-    },
+  extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [rehypePrism],
+  },
 });
 
 export default withMDX(nextConfig);
