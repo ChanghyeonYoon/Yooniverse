@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
+import React from "react";
 
 import { DefaultOpenGraph } from "@/src/app/shared-metadata";
 import { Container } from "@/src/components/Container";
@@ -95,6 +96,28 @@ export default function Home() {
         <li>프로덕트가 운영되는 인프라 환경을 고려하여 개발하며, 더 나은 방법을 찾기 위해 노력합니다.</li>
       </ul>
       <WorkHistory />
+      <div className='mt-5'>
+        <Heading as='h2' className='font-black text-lg md:text-xl lg:text-2xl'>
+          Experiences
+        </Heading>
+        <ul className='list-disc ml-4 gap-y-2.5 flex flex-col mt-2'>
+          <li>Datadog Ambassador - 아시아 최초, 한국 유일</li>
+          <li>Microsoft Learn Student Ambassadors</li>
+          <li>Google Developer Groups - Incheon / Songdo Organizer</li>
+          <li>KWDC 2024 Organizer</li>
+          <li>LetʼSwift 2024 Organizer</li>
+          <li>GopherCon Korea 2023 Organizer</li>
+          <li>Google Developer Student Clubs - Hanyang Univ 1st Lead</li>
+        </ul>
+      </div>
+      <div className='mt-5'>
+        <Heading as='h2' className='font-black text-lg md:text-xl lg:text-2xl'>
+          Certification
+        </Heading>
+        <ul className='list-disc ml-4 gap-y-2.5 flex flex-col mt-2'>
+          <li>AWS Solutions Architect - Associate</li>
+        </ul>
+      </div>
     </Container>
   );
 }
