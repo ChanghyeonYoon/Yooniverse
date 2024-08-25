@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Badge } from "@/src/components/Badge";
 import { navlinks } from "@/src/constants/navlinks";
@@ -20,7 +20,15 @@ import { formatLabel } from "@/lib/formatText";
 import { Heading } from "./Heading";
 
 export const Sidebar = () => {
-  const [open, setOpen] = useState(isMobile() ? false : true);
+  const [open, setOpen] = useState(!isMobile());
+
+  useEffect(() => {
+    const handleResize = () => {
+      setOpen(!isMobile());
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <>
