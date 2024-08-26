@@ -14,7 +14,6 @@ export const DefaultOpenGraph = {
   locale: "ko_KR",
   url: "https://changhyeon.net",
   title: "Yooniverse",
-  site_name: "Yooniverse",
   description: "윤창현 | Changhyeon (Kevin) Yoon - Software Engineer",
   images: defaultImages,
 };

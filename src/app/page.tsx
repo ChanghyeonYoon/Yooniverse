@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+import { Blogs } from "@/src/components/Blogs";
 import { Container } from "@/src/components/Container";
 import { Heading } from "@/src/components/Heading";
 import { Highlight } from "@/src/components/Highlight";
@@ -9,7 +10,11 @@ import { Paragraph } from "@/src/components/Paragraph";
 import { TechStack } from "@/src/components/TechStack";
 import { prefix } from "@/src/constants/prefix";
 
-export default function Home() {
+import { getAllBlogs } from "@/lib/getAllBlogs";
+
+export default async function Home() {
+  const blogs = await getAllBlogs();
+  const data = blogs.map(({ component, ...meta }) => meta).slice(0, 5);
   return (
     <Container>
       <Image
@@ -61,7 +66,7 @@ export default function Home() {
       <Heading as='h2' className='font-black text-lg md:text-lg lg:text-lg mt-20 mb-4'>
         Recent Posts
       </Heading>
-      {/*<Events />*/}
+      <Blogs blogs={data} />
       <TechStack />
     </Container>
   );

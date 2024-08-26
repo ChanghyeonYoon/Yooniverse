@@ -4,11 +4,8 @@ import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
-import { LinkPreview } from "@/src/components/LinkPreview";
 import { Product } from "@/src/types/products";
 import { motion } from "framer-motion";
-
-import { formatDate } from "@/lib/formatDate";
 
 import { Heading } from "./Heading";
 import { Paragraph } from "./Paragraph";
