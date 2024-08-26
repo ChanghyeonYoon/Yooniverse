@@ -77,8 +77,8 @@ export async function GET(req: NextRequest) {
                 <img
                   src={
                     process.env.NODE_ENV === "development"
-                      ? "http://localhost:3000" + prefix + "/images/profile_large.jpg"
-                      : `${prefix}/images/profile_large.jpg`
+                      ? "http://localhost:3000/images/profile_large.jpg"
+                      : `https://changhyeon.net/images/profile_large.jpg`
                   }
                   style={{
                     width: "150px",
