@@ -5,7 +5,7 @@ import remarkGfm from "remark-gfm";
 
 const nextConfig = {
   images: {
-    domains: ["api.microlink.io"],
+    domains: ["api.microlink.io", "images.unsplash.com"],
     formats: ["image/avif", "image/webp"],
   },
   compiler: {
