@@ -8,13 +8,38 @@ import { LinkPreview } from "@/src/components/LinkPreview";
 import { Product } from "@/src/types/products";
 import { motion } from "framer-motion";
 
+import { formatDate } from "@/lib/formatDate";
+
 import { Heading } from "./Heading";
 import { Paragraph } from "./Paragraph";
+
+function ArrowLeftIcon(props: any) {
+  return (
+    <svg viewBox='0 0 16 16' fill='none' aria-hidden='true' {...props}>
+      <path
+        d='M7.25 11.25 3.75 8m0 0 3.5-3.25M3.75 8h8.5'
+        strokeWidth='1.5'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+      />
+    </svg>
+  );
+}
 
 export const SingleProduct = ({ product }: { product: Product }) => {
   const [activeImage, setActiveImage] = useState<StaticImageData | string>(product.thumbnail);
   return (
-    <div className='py-10'>
+    <div>
+      <header className='flex flex-col'>
+        <Link
+          type='button'
+          href='/projects'
+          aria-label='Go back to articles'
+          className='group mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 transition  '
+        >
+          <ArrowLeftIcon className='h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 d' />
+        </Link>
+      </header>
       <motion.div
         initial={{
           opacity: 0,
@@ -35,7 +60,7 @@ export const SingleProduct = ({ product }: { product: Product }) => {
           alt='thumbnail'
           height='1200'
           width='630'
-          className='rounded-md object-contain w-[1200px] h-[630px]'
+          className='rounded-md object-contain max-lg:w-full lg:w-[1200px] lg:h-[630px]'
         />
         <div className='absolute bottom-0 bg-white h-40 w-full [mask-image:linear-gradient(to_bottom,transparent,white)]' />
       </motion.div>
@@ -54,7 +79,7 @@ export const SingleProduct = ({ product }: { product: Product }) => {
       </div>
       <div className='flex justify-between items-center flex-col mt-20'>
         <Heading className='font-black mb-2 pb-1'> {product.title}</Heading>
-        <div className='flex space-x-2 md:mb-1 mt-2 md:mt-0'>
+        <div className='flex gap-2 flex-wrap md:mb-1 mt-2 md:mt-0 '>
           {product.stack?.map((stack: string) => (
             <span key={stack} className='text-xs  md:text-xs lg:text-xs bg-gray-50 px-2 py-1 rounded-sm text-secondary'>
               {stack}
@@ -67,31 +92,29 @@ export const SingleProduct = ({ product }: { product: Product }) => {
       </div>
       <div className='prose prose-sm md:prose-base max-w-none text-neutral-600'>{product?.content}</div>
 
-      <LinkPreview url={product.href}>
-        <a
-          href={product.href}
-          target='__blank'
-          className='inline-flex items-center gap-1 group/button rounded-full hover:scale-105 focus:outline-none transition ring-offset-gray-900 bg-gray-800 text-white shadow-lg shadow-black/20 sm:backdrop-blur-sm group-hover/button:bg-gray-50/15 group-hover/button:scale-105 focus-visible:ring-1 focus-visible:ring-offset-2 ring-gray-50/60 text-sm font-medium px-4 py-2 mt-5 origin-left'
+      <a
+        href={product.href}
+        target='__blank'
+        className='inline-flex items-center gap-1 group/button rounded-full hover:scale-105 focus:outline-none transition ring-offset-gray-900 bg-gray-800 text-white shadow-lg shadow-black/20 sm:backdrop-blur-sm group-hover/button:bg-gray-50/15 group-hover/button:scale-105 focus-visible:ring-1 focus-visible:ring-offset-2 ring-gray-50/60 text-sm font-medium px-4 py-2 mt-5 origin-left'
+      >
+        Live Preview
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          width='24'
+          height='24'
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          stroke-width='2'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+          className='w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform'
         >
-          Live Preview
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            width='24'
-            height='24'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            stroke-width='2'
-            stroke-linecap='round'
-            stroke-linejoin='round'
-            className='w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform'
-          >
-            <path d='M5 12l14 0'></path>
-            <path d='M13 18l6 -6'></path>
-            <path d='M13 6l6 6'></path>
-          </svg>
-        </a>
-      </LinkPreview>
+          <path d='M5 12l14 0'></path>
+          <path d='M13 18l6 -6'></path>
+          <path d='M13 6l6 6'></path>
+        </svg>
+      </a>
     </div>
   );
 };

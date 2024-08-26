@@ -64,9 +64,9 @@ export const Products = () => {
                     </Heading>
                     <Paragraph className='text-sm md:text-sm lg:text-sm mt-2 max-w-xl'>{product.description}</Paragraph>
                   </div>
-                  <div className='flex space-x-2 md:mb-1 mt-2 md:mt-0'>
+                  <div className='flex gap-2 md:mb-1 mt-2 md:mt-0 flex-wrap'>
                     {product.stack?.map((stack: string, idx: number, array: any[]) => {
-                      if (idx > 4) {
+                      if (idx === 5) {
                         return (
                           <span
                             key={stack}
@@ -75,6 +75,9 @@ export const Products = () => {
                             +{array.length - 5} more
                           </span>
                         );
+                      }
+                      if (idx > 5) {
+                        return null;
                       }
                       return (
                         <span
