@@ -2,7 +2,6 @@ import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import React from "react";
 
-import { prefix } from "@/src/constants/prefix";
 import { JSDOM } from "jsdom";
 
 export async function GET(req: NextRequest) {
