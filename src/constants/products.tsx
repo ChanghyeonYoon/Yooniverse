@@ -152,40 +152,40 @@ export const products = [
     slug: "k-vote",
     content: <div></div>,
   },
-  {
-    href: "https://v1.changhyeon.net",
-    title: "Yooniverse 개인블로그 - v1",
-    created_at: "2024-08-25 00:00:00",
-    modified_at: "2024-08-25 00:00:00",
-    description: "Yooniverse 개인 블로그 - v1",
-    thumbnail: YooniverseV1Thumbnail,
-    images: [YooniverseV1Thumbnail],
-    stack: ["TypeScript", "Nextjs", "Tailwindcss"],
-    slug: "blog",
-    content: (
-      <div>
-        <p>지금 보고 있는 블로그가 아닌 v1 버전의 블로그 </p>
-        <ul className='space-y-4 list-disc'>
-          <li>
-            <p>
-              100개가 넘는 아티클을 Notion에서 불러오는데 시간이 오래걸리고 제약이 있어 문제가 있었습니다.
-              <ul className='ml-6 mt-2 space-y-2'>
-                <li>
-                  <p>
-                    <Highlight>Redis</Highlight>를 로딩시간을 단축 및 빌드 최적화를 하였습니다 (기존 10분 이상 → 2분
-                    이내)
-                  </p>
-                </li>
-                <li>
-                  <p>Open Graph를 자동으로 생성할 수 있도록 API Route를 사용하였습니다.</p>
-                </li>
-              </ul>
-            </p>
-          </li>
-        </ul>
-      </div>
-    ),
-  },
+  // {
+  //   href: "https://v1.changhyeon.net",
+  //   title: "Yooniverse 개인블로그 - v1",
+  //   created_at: "2024-08-25 00:00:00",
+  //   modified_at: "2024-08-25 00:00:00",
+  //   description: "Yooniverse 개인 블로그 - v1",
+  //   thumbnail: YooniverseV1Thumbnail,
+  //   images: [YooniverseV1Thumbnail],
+  //   stack: ["TypeScript", "Nextjs", "Tailwindcss"],
+  //   slug: "blog",
+  //   content: (
+  //     <div>
+  //       <p>지금 보고 있는 블로그가 아닌 v1 버전의 블로그 </p>
+  //       <ul className='space-y-4 list-disc'>
+  //         <li>
+  //           <p>
+  //             100개가 넘는 아티클을 Notion에서 불러오는데 시간이 오래걸리고 제약이 있어 문제가 있었습니다.
+  //             <ul className='ml-6 mt-2 space-y-2'>
+  //               <li>
+  //                 <p>
+  //                   <Highlight>Redis</Highlight>를 로딩시간을 단축 및 빌드 최적화를 하였습니다 (기존 10분 이상 → 2분
+  //                   이내)
+  //                 </p>
+  //               </li>
+  //               <li>
+  //                 <p>Open Graph를 자동으로 생성할 수 있도록 API Route를 사용하였습니다.</p>
+  //               </li>
+  //             </ul>
+  //           </p>
+  //         </li>
+  //       </ul>
+  //     </div>
+  //   ),
+  // },
   {
     href: "https://github.com/access-ride",
     title: "무턱대고",

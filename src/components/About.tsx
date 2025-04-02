@@ -89,34 +89,63 @@ export default function About() {
         </Paragraph>
         <div className='bg-slate-400 w-full h-px my-10' />
 
-        <Paragraph>Hello! I&apos;m Kevin, a developer who loves to travel.</Paragraph>
-        <Paragraph className='mt-4'>
-          I believe in the importance of community and strive for growth within it.
-          <br />
-          If you run alone without looking around, you may not be able to properly grasp your current situation.
-          <br />
-          However, I believe that you can grow by communicating and sharing knowledge with various people within the
-          community.
-        </Paragraph>
-        <Paragraph className='mt-4'>
-          As a developer, I try to write each line of code with affection. <br />
-          Among Apple&apos;s philosophies, there is a saying that&nbsp;
-          <i className='font-bold'>
-            the best technology is the one that anyone can use freely and comfortably at any time
-          </i>
-          .
-          <br />I strive to write code that&nbsp;
-          <i className='font-bold'>anyone can freely modify and utilize at any time</i>, beyond just the users, but also
-          the code working behind the scenes.
-        </Paragraph>
-        <Paragraph className='mt-4'>
-          There is a saying that&nbsp;<i className='font-bold'>the best welfare is colleagues</i>.
-          <br />
-          As a member of an organization, I want to be a colleague who helps others with high responsibility and
-          passion. <br />
-        </Paragraph>
+        
+        <div className='flex items-center mt-10 mb-4'>
+          <span className='font-black text-lg md:text-xl lg:text-2xl font-Tossface mr-2'>💼</span>
+          <Heading as='h2' className='font-black text-lg md:text-xl lg:text-2xl'>
+            Activities
+          </Heading>
+        </div>
+        <ul className='list-disc list-inside'>
+          <li className='font-black tracking-widest'>
+          Datadog Ambassador (2024 ~ Current)
+          </li>
+          <li className='font-black tracking-widest'>
+          Google Developer Group Incheon & Songdo - Organizer (2024 ~ Current)
+          </li>
+          <li className='font-black tracking-widest'>
+          KWDC - Koreawide Developer Conference - Organizer (2024 ~ Current)
+          </li>
+          <li className='font-black tracking-widest'>
+          Microsoft Learn Student Ambassador (2023 ~ 2024)
+          </li>
+          <li className='font-black tracking-widest'>
+          Google Developer Student Club Hanyang Univ. - 1st Lead (2022 ~ 2023)
+          </li>
+        </ul>
 
-        <div className='flex items-center mt-20 mb-4'>
+        <div className='bg-slate-400 w-full h-px my-10' />
+
+        
+        <div className='flex items-center mt-10 mb-4'>
+          <span className='font-black text-lg md:text-xl lg:text-2xl font-Tossface mr-2'>📣</span>
+          <Heading as='h2' className='font-black text-lg md:text-xl lg:text-2xl'>
+            Speaker
+          </Heading>
+        </div>
+        <ul className='list-disc list-inside'>
+        <li className='font-black tracking-widest'>
+          KWDC24 - Koreawide Developer Conference 2024
+          </li>
+          <li className='font-black tracking-widest'>
+          AWS Summit Seoul 2023
+          </li>
+          <li className='font-black tracking-widest'>
+          MADC - Mobile App Developer&apos;s Conference 2023
+          </li>
+          <li className='font-black tracking-widest'>
+          AWS Community Day Seoul 2023
+          </li>
+          <li className='font-black tracking-widest'>
+          AWSKRUG - AWS Korea User Group Frontend Meetup 2023
+          </li>
+        </ul>
+
+
+        <div className='bg-slate-400 w-full h-px my-10' />
+
+        
+        <div className='flex items-center mt-10 mb-4'>
           <span className='font-black text-lg md:text-xl lg:text-2xl font-Tossface mr-2'>✈️</span>
           <Heading as='h2' className='font-black text-lg md:text-xl lg:text-2xl'>
             World Traveler

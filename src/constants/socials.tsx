@@ -38,32 +38,22 @@ export const LINKS = [
 export const COMMUNITY_LINKS = [
   {
     href: "https://datadogkrug.vercel.app",
-    label: `DatadogKRUG\nDatadog Korea User Group`,
-    icon: IconBuildingCommunity,
-  },
-  {
-    href: "https://mvp.microsoft.com/en-US/studentambassadors/profile/c04280ef-2dfe-4f8f-892e-d6ea1db51b7d",
-    label: `MLSA\nMicrosoft Learn Student Ambassadors`,
+    label: `Datadog Korea User Group\nOrganizer`,
     icon: IconBuildingCommunity,
   },
   {
     href: "https://gdg.community.dev/gdg-incheon",
-    label: `GDG Incheon & Songdo\nGoogle Developer Groups`,
+    label: `GDG Incheon & Songdo\nOrganizer`,
     icon: IconBuildingCommunity,
   },
   {
     href: "https://kwdc.dev",
-    label: `KWDC\nKoreawide Developer Conference`,
-    icon: IconBuildingCommunity,
-  },
-  {
-    href: "https://letswift.kr/2024/",
-    label: `Let'Swift\niOS Developer Conference`,
+    label: `Koreawide Developer Conference\nOrganizer`,
     icon: IconBuildingCommunity,
   },
   {
     href: "https://gdsc.community.dev/hanyang-university-seoul-south-korea/",
-    label: `GDSC Hanyang Univ. 1st Lead\nGoogle Developer Student Clubs`,
+    label: `Google Developer Student Club\nHanyang Univ. 1st Lead`,
     icon: IconBuildingCommunity,
   },
 ];
