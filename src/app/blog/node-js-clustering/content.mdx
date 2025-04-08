@@ -44,7 +44,7 @@ const CONFIG = {
 };
 
 if (cluster.isPrimary) {
-  console.log(\`메인 프로세스 \${process.pid}가 실행 중입니다. 워커 수: \${CONFIG.WORKERS}\`);
+  console.log(`메인 프로세스 ${process.pid}가 실행 중입니다. 워커 수: ${CONFIG.WORKERS}`);
   
   // 워커 프로세스 생성
   for (let i = 0; i < CONFIG.WORKERS; i++) {
@@ -53,13 +53,13 @@ if (cluster.isPrimary) {
   
   // 워커 종료 이벤트 처리
   cluster.on('exit', (worker, code, signal) => {
-    console.log(\`워커 \${worker.process.pid}가 종료되었습니다\`);
+    console.log(`워커 ${worker.process.pid}가 종료되었습니다`);
     // 워커 재시작
     cluster.fork();
   });
 } else {
   // 워커 프로세스 코드
-  console.log(\`워커 프로세스 \${process.pid}가 실행되었습니다\`);
+  console.log(`워커 프로세스 ${process.pid}가 실행되었습니다`);
   // 여기에 실제 서버 코드 구현
 }
 
