@@ -43,7 +43,7 @@ export const COMMUNITY_LINKS = [
   },
   {
     href: "https://gdg.community.dev/gdg-incheon",
-    label: `GDG Incheon & Songdo\nOrganizer`,
+    label: `GDG Incheon\nOrganizer`,
     icon: IconBuildingCommunity,
   },
   {

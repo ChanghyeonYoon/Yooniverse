@@ -101,7 +101,7 @@ export default function About() {
           Datadog Ambassador (2024 ~ Current)
           </li>
           <li className='font-black tracking-widest'>
-          Google Developer Group Incheon & Songdo - Organizer (2024 ~ Current)
+          Google Developer Group Incheon - Organizer (2024 ~ Current)
           </li>
           <li className='font-black tracking-widest'>
           KWDC - Koreawide Developer Conference - Organizer (2024 ~ Current)

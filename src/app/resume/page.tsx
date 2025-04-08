@@ -103,7 +103,7 @@ export default function Home() {
         <ul className='list-disc ml-4 gap-y-2.5 flex flex-col mt-2'>
           <li>Datadog Ambassador - 아시아 최초, 한국 유일</li>
           <li>Microsoft Learn Student Ambassadors</li>
-          <li>Google Developer Groups - Incheon / Songdo Organizer</li>
+          <li>Google Developer Groups - Incheon Organizer</li>
           <li>KWDC 2024 Organizer</li>
           <li>LetʼSwift 2024 Organizer</li>
           <li>GopherCon Korea 2023 Organizer</li>
