@@ -8,9 +8,18 @@ import { Prose } from "@/src/components/Prose";
 
 import { formatDate } from "@/lib/formatDate";
 
+import {DiscussionEmbed} from 'disqus-react'
+
 import { Container } from "./Container";
 import { Heading } from "./Heading";
 import { Paragraph } from "./Paragraph";
+
+import Prism from "prismjs";
+import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-typescript";
+import "prismjs/components/prism-jsx";
+import "prismjs/components/prism-tsx";
+import { useEffect } from "react";
 
 function ArrowLeftIcon(props: any) {
   return (
@@ -27,6 +36,10 @@ function ArrowLeftIcon(props: any) {
 
 export function BlogLayout({ children, meta, isRssFeed = false, previousPathname }: any) {
   let router = useRouter();
+
+  useEffect(() => {
+    Prism.highlightAll();
+  }, []);
 
   return (
     <Container>
@@ -52,12 +65,25 @@ export function BlogLayout({ children, meta, isRssFeed = false, previousPathname
               alt='thumbnail'
               height='1200'
               width='630'
+              quality={100}
+              priority
               className={`object-cover object-left-top w-full max-h-[630px]`}
             />
           </div>
         </header>
-        <Prose className='mt-8'>{children}</Prose>
+        <Prose className='mt-20'>{children}</Prose>
       </article>
+      <div className='mt-20'>
+        <DiscussionEmbed
+          shortname='yooniverse'
+          config={{
+            url: `https://changhyeon.net/${meta.href}`,
+            identifier: meta.href,
+            language: "ko",
+            title: meta.title,
+          }}
+        />
+      </div>
     </Container>
   );
 }

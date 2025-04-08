@@ -5,15 +5,838 @@ import Thumbnail from "@/src/app/blog/node-js-clustering/images/thumbnail.png";
 export const meta = {
   date: "2025-04-08",
   title: "Cluster Mode를 통해 Next.js를 효과적으로 운영하는 방법",
+  href: "/blog/node-js-clustering",
   description:
-    "Node.js로 작동하는 Next.js 특성 상 기본적으로 싱글스레드로 작동합니다. 이 글에서는 Node.js의 Cluster Module과 PM2 Cluster Mode에 대해 각각 알아보겠습니다.",
-  image:
-  Thumbnail.src,
+    "Node.js로 작동하는 Next.js 특성 상 기본적으로 싱글스레드로 작동합니다. 이 글에서는 Node.js의 Cluster Module과 PM2 Cluster Mode를 통해 성능 개선한 사례에 대해 알려드리겠습니다.",
+  image: Thumbnail.src,
   tags: ["Next.js", "Node.js", "Cluster", "PM2", "Fargate", "Load Balancing"],
 };
 
 export default (props) => <BlogLayout meta={meta} {...props} />;
 
-작성중...
+## Introduction
+현재 저희 회사의 프론트엔드는 AWS ECS Fargate 환경에서 실행되고 있습니다.
+EC2와 달리 Fargate는 CPU Core의 갯수만 설정할 수 있고 클럭에 대한 선택지는 없습니다..
+따라서 Node.js 환경에서 작동하는 Next.js 특성상 CPU Core를 단순히 올린다고 해서 성능 개선을 이뤄내기 어렵습니다.
+Next.js 버전이 올라가고 middleware, Server Side Function, API Route 등으로 인해 서버의 부하는 증가하였지만 Fargate 환경에서는 이에 대응할 수가 없었습니다.
+기존에는 1vCPU, 2GiB Memory로 사용 중 이었는데 운영 환경에서 배포된지 시간이 오래되면 자꾸 매트릭이 튀며 unHealthy Host가 되어버리는 현상이 자주 발생하였습니다. 🥹
+
+## Node.js 애플리케이션의 성능 최적화 : Cluster Module과 PM2
+Node.js는 기본적으로 싱글 스레드 환경으로 동작하기 때문에, 멀티 코어 시스템의 자원을 충분히 활용하지 못하는 한계가 있습니다.
+서버의 사양이 4코어 8스레드라고 하더라고 Node.js는 싱글 스레드로 동작하기 때문에 잉여 자원이 발생할 수 밖에 없습니다.
+이러한 한계를 극복하기 위해 Node.js는 `cluster` 모듈을 제공하며, 별도로 PM2와 같은 프로세스 매니저를 사용할 수도 있습니다.
+
+## Node.js Cluster Module
+Cluster 모듈은 Node.js의 내장 모듈로, 멀티 코어 시스템에서 여러 개의 Node.js 프로세스를 생성해 병렬 처리를 가능하게 합니다.
+이 모듈을 사용하면 메인 프로세스가 여러 워커 프로세스를 생성하고 관리하여, 각 워커가 동일한 포트를 공유하며 요청을 병렬로 처리합니다.
+
+```js
+// sample-cluster.js
+const cluster = require('node:cluster');
+const process = require('node:process');
+const { cpus } = require('node:os');
+const path = require('path');
+
+// 설정 값
+const CONFIG = {
+  // 최대 워커 수 계산 (CPU 코어 수를 사용)
+  WORKERS: Math.max(1, Math.floor(cpus().length)),
+};
+
+if (cluster.isPrimary) {
+  console.log(\`메인 프로세스 \${process.pid}가 실행 중입니다. 워커 수: \${CONFIG.WORKERS}\`);
+  
+  // 워커 프로세스 생성
+  for (let i = 0; i < CONFIG.WORKERS; i++) {
+    cluster.fork();
+  }
+  
+  // 워커 종료 이벤트 처리
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(\`워커 \${worker.process.pid}가 종료되었습니다\`);
+    // 워커 재시작
+    cluster.fork();
+  });
+} else {
+  // 워커 프로세스 코드
+  console.log(\`워커 프로세스 \${process.pid}가 실행되었습니다\`);
+  // 여기에 실제 서버 코드 구현
+}
+
+```
+위 코드는 기본적인 Cluster 모듈 구현 예시로, 시스템의 CPU 코어 수만큼 워커 프로세스를 생성하고 관리합니다.
+
+### Cluster 모듈의 장점 ✅
+1. 외부 의존성 없이 Node.js 내장 모듈만으로 구현 가능합니다. 🛠️
+2. 각 프로세스가 독립적인 메모리 공간을 가져 한 프로세스의 문제가 다른 프로세스에 영향을 주지 않습니다. 🔒
+3. 세밀한 제어가 가능하여 커스텀 로직을 직접 구현할 수 있습니다. 🎛️
+4. 별도의 설치 과정 없이 바로 사용 가능합니다. ⚡
+
+### Cluster 모듈의 단점 ⚠️
+1. 직접 관리해야 하는 복잡성이 증가합니다. 🧩
+2. 프로세스 모니터링을 위한 별도 도구 구현이 필요합니다. 📊
+3. 로그 관리가 복잡해질 수 있습니다. 📝
+4. 생성된 프로세스 간 자원을 공유하지 못합니다 🔄
+
+## PM2
+PM2는 Node.js 애플리케이션을 위한 프로세스 매니저로, 클러스터링, 로드 밸런싱, 로그 관리, 모니터링 등 다양한 기능을 제공합니다. 
+PM2도 내부적으로 Node.js의 Cluster 모듈을 사용하지만, 더 편리한 인터페이스와 추가 기능을 제공합니다.
+
+### PM2 설치 및 기본 사용법
+```bash
+# PM2 전역 설치
+npm install -g pm2
+
+# 기본 실행 (포크 모드)
+pm2 start app.js
+
+# 클러스터 모드 실행
+pm2 start app.js -i 0  # 0은 가용한 모든 CPU 코어를 사용
+
+# Next.js 애플리케이션 실행
+pm2 start npm --name "next-app" -- run start
+```
+
+### PM2 클러스터 모드 설정
+```js
+// ecosystem.config.js
+module.exports = {
+  apps: [
+    {
+      // 애플리케이션 이름 (PM2에서 사용할 이름)
+      // PM2 명령어에서 이 이름을 사용하여 애플리케이션을 제어합니다.
+      name: 'my-app-name',
+
+      // 실행할 스크립트 파일 경로
+      // Node.js 파일뿐만 아니라, Bash, Python 등 다른 스크립트도 실행 가능합니다.
+      script: './dist/main.js',
+
+      // 현재 작업 디렉토리 (기본값: 현재 디렉토리)
+      // 애플리케이션 실행 기준이 되는 경로를 지정합니다.
+      cwd: '/home/user/my-app',
+
+      // 실행 모드: "fork" 또는 "cluster"
+      // fork: 단일 프로세스 실행
+      // cluster: 멀티 코어를 활용하여 여러 프로세스 실행
+      exec_mode: 'cluster',
+
+      // 실행할 인스턴스 수
+      // cluster 모드에서만 유효하며, "max"로 설정하면 모든 CPU 코어를 사용합니다.
+      instances: 'max',
+
+      // 애플리케이션에 전달할 인수
+      // 실행 시 커맨드라인 인수로 전달됩니다.
+      args: ['--port', '3000'],
+
+      // 기본 환경 변수 설정
+      // NODE_ENV, PORT 등 실행 환경을 정의합니다.
+      env: {
+        NODE_ENV: 'development', // 개발 환경
+        PORT: 3000, // 기본 포트
+      },
+
+      // 프로덕션 환경에서 사용할 환경 변수 설정
+      // "pm2 start ecosystem.config.js --env production"으로 실행 시 적용됩니다.
+      env_production: {
+        NODE_ENV: 'production', // 프로덕션 환경
+        PORT: 8000, // 프로덕션 포트
+      },
+
+      // 로그 파일 경로 설정 (표준 출력과 에러 로그 통합)
+      log_file: '/var/logs/my-app-combined.log',
+
+      // 표준 출력 로그 파일 경로
+      out_file: '/var/logs/my-app-out.log',
+
+      // 에러 로그 파일 경로
+      error_file: '/var/logs/my-app-error.log',
+
+      // 파일 변경 감지 (기본값: false)
+      // true로 설정하면 파일 변경 시 애플리케이션을 자동으로 재시작합니다.
+      watch: true,
+
+      // 감시에서 제외할 파일/폴더 (watch가 true일 때 유효)
+      ignore_watch: ['node_modules', 'logs'],
+
+      // 자동 재시작 여부 (기본값: true)
+      // false로 설정하면 애플리케이션이 종료된 상태로 유지됩니다.
+      autorestart: true,
+
+      // 재시작 시도 횟수 (기본값: 무제한)
+      // 특정 횟수 이상 실패하면 프로세스를 종료합니다.
+      max_restarts: 10,
+
+      // 최대 메모리 사용량 (기본값: 제한 없음)
+      // 프로세스가 이 메모리 제한을 초과하면 재시작합니다.
+      max_memory_restart: '300M',
+
+      // 개발 중 디버깅을 위한 상세 로그 활성화 (기본값: false)
+      // true로 설정하면 애플리케이션 디버그 로그를 더 많이 출력합니다.
+      debug: false,
+
+      // 실행 중인 프로세스의 CPU/메모리 사용량을 확인할 주기 (기본값: 10초)
+      // PM2 Dashboard와 같은 모니터링 도구에서 사용됩니다.
+      min_uptime: '1m', // 최소 실행 시간 (프로세스가 이 시간 이전에 종료되면 비정상으로 간주)
+
+      // 사용자 정의 스크립트를 애플리케이션 실행 후 실행
+      post_start_script: './scripts/postStart.sh',
+    },
+  ],
+};
+```
+**실행**
+```bash
+pm2 start ecosystem.config.js
+```
+
+### PM2의 장점 ✅
 
 
+1. 간편한 클러스터링 설정과 관리가 가능합니다 ✨.
+2. 여러 프로세스에 자동으로 로드 밸런싱을 적용합니다 ⚖️.
+3. `pm2 monit` 명령어로 실시간 모니터링 대시보드를 제공합니다 🔍.
+4. 무중단 배포(zero-downtime deployment)를 지원합니다 ⚡ .
+5. 프로세스 충돌 시 자동 재시작 기능을 제공합니다 🔄.
+6. 로그 관리 기능이 내장되어 있습니다 📝.
+
+### PM2의 단점 ⚠️
+
+1. 일부 패키지에 대한 의존성이 추가됩니다 📦.
+2. 직접 구현했을 때보다 일부 기능이 제한이 있을 수 있습니다 🚫.
+3. 클러스터 모드에서 생성된 프로세스 간 자원 공유가 어렵습니다 🔄.
+
+
+## Node.js Cluster를 사용하기로 결정
+PM2도 적용해 보았으나 PM2에서는 Memory를 기준으로 재시작 옵션만 존재하고 CPU기준으로 재시작을 하는 기능은 없었으며
+모니터링을 하기위해 PM2.io를 제공하긴 하지만 저희 회사에서 사용하기엔 비용 문제도 있고 필요없는 기능도 많았습니다.
+
+- 모니터링을 위한 커스텀 로그 추가
+- CPU, Memeory 사용량 기반으로 자동 재시작
+- 차후 커스텀 작업
+
+위 요구사항으로 인해 저희는 Node.js의 Cluster Module 을 사용하기로 하였습니다.
+그리고 PM2를 cluster max로 사용할 경우 CPU, Memory 사용량이 실행된지 오래될 수록 점진적으로 증가하는 문제가 있었어요
+[관련 Github Issue](https://github.com/Unitech/pm2/issues/4317)
+
+## 최종 
+```js
+// sample.cluster.js
+const cluster = require('node:cluster');
+const process = require('node:process');
+const { cpus } = require('node:os');
+const path = require('path');
+const fs = require('fs');
+const os = require('os');
+
+// 설정 값을 환경 변수에서 가져오거나 기본값 사용
+const CONFIG = {
+  // 최대 워커 수 계산 (CPU 코어 수의 80%를 사용하고 최소 1개 보장)
+  WORKERS: Math.max(1, Math.floor(cpus().length)),
+  // 개별 워커당 메모리 제한 (기본 2GB)
+  MEMORY_LIMIT: 2 * 1024 * 1024 * 1024,
+  // 메모리 체크 주기 (기본 30초)
+  MEMORY_CHECK_INTERVAL: 30000,
+  // 메모리 경고 임계값 (기본 70%)
+  MEMORY_CHECK_THRESHOLD: 0.7,
+  // 워커 종료 대기 시간 (기본 15초)
+  WORKER_SHUTDOWN_TIMEOUT: 15000,
+  // 서버 파일 경로 (환경 변수로 설정 가능)
+  SERVER_PATH: path.join(__dirname, './server.js'),
+  // Datadog APM 활성화 여부
+  USE_DATADOG: true,
+  // CPU 사용량 체크 주기 (기본 30초)
+  CPU_CHECK_INTERVAL: 30000,
+  // CPU 사용량 경고 임계값 (기본 70%)
+  CPU_THRESHOLD: 0.7,
+  // CPU 사용량 지속 시간 임계값 (기본 5분)
+  CPU_HIGH_DURATION_THRESHOLD: 5 * 60 * 1000,
+  // 메모리 사용량 지속 시간 임계값 (기본 5분)
+  MEMORY_HIGH_DURATION_THRESHOLD: 5 * 60 * 1000,
+};
+
+// 시스템 상태 및 메모리 정보 로깅 함수
+const logSystemStatus = () => {
+  const totalMem = os.totalmem();
+  const freeMem = os.freemem();
+  const usedMem = totalMem - freeMem;
+  const memUsagePercent = (usedMem / totalMem) * 100;
+
+  console.log(
+    `[INFO] 시스템 상태: 총 메모리: ${(totalMem / (1024 * 1024 * 1024)).toFixed(
+      2
+    )} GB, 사용 중인 메모리: ${(usedMem / (1024 * 1024 * 1024)).toFixed(
+      2
+    )} GB (${memUsagePercent.toFixed(2)}%), 가용 메모리: ${(freeMem / (1024 * 1024 * 1024)).toFixed(
+      2
+    )} GB, CPU 로드: ${os
+      .loadavg()
+      .map((load) => load.toFixed(2))
+      .join(', ')}, 실행 중인 워커 수: ${Object.keys(cluster.workers || {}).length}`
+  );
+};
+
+if (cluster.isPrimary) {
+  console.log(
+    `[INFO] Miricanvas Design 메인 프로세스 ${process.pid}가 실행 중입니다. 설정된 최대 워커 수: ${
+      CONFIG.WORKERS
+    } (사용 가능한 CPU: ${cpus().length})`
+  );
+
+  // 서버 파일 존재 확인
+  if (!fs.existsSync(CONFIG.SERVER_PATH)) {
+    console.error(`[ERROR] ${CONFIG.SERVER_PATH} 경로에서 서버 파일을 찾을 수 없습니다`);
+    process.exit(1);
+  }
+
+  // Datadog APM 설정 (활성화된 경우)
+  if (CONFIG.USE_DATADOG) {
+    process.env.NODE_OPTIONS = '--require dd-trace/init';
+
+    cluster.setupPrimary({
+      exec: CONFIG.SERVER_PATH,
+      stdio: 'inherit',
+      args: ['--require', 'dd-trace/init'],
+      execArgv: ['--require', 'dd-trace/init'],
+    });
+  } else {
+    cluster.setupPrimary({
+      exec: CONFIG.SERVER_PATH,
+      stdio: 'inherit',
+    });
+  }
+
+  // 워커 프로세스 관리를 위한 객체
+  const workers = {};
+  // 워커의 CPU 사용량 기록을 저장하는 객체
+  const workerCpuUsage = {};
+  // 워커의 메모리 사용량 기록을 저장하는 객체
+  const workerMemoryUsage = {};
+
+  // 시스템 상태 초기 로깅
+  logSystemStatus();
+
+  // 워커 생성 함수
+  const createWorker = () => {
+    const worker = cluster.fork();
+    workers[worker.id] = worker;
+    // CPU 사용량 모니터링 데이터 초기화
+    workerCpuUsage[worker.id] = {
+      highCpuStartTime: null,
+      samples: [],
+      isHighCpu: false,
+    };
+    // 메모리 사용량 모니터링 데이터 초기화
+    workerMemoryUsage[worker.id] = {
+      highMemoryStartTime: null,
+      isHighMemory: false,
+    };
+
+    console.log(
+      `[INFO] 워커 ${worker.process.pid} 생성됨 (현재 워커 수: ${Object.keys(workers).length})`
+    );
+
+    // 워커별 이벤트 핸들러 설정
+    worker.on('error', (err) => {
+      console.error(`[ERROR] 워커 ${worker.process.pid} 오류:`, err);
+    });
+
+    return worker;
+  };
+
+  // 워커 종료 함수
+  const terminateWorker = (worker, reason) => {
+    console.log(`[INFO] 워커 ${worker.process.pid} 종료 요청 (사유: ${reason})`);
+
+    // 이미 종료 중인지 확인
+    if (worker.isShuttingDown) {
+      return;
+    }
+
+    worker.isShuttingDown = true;
+
+    // 워커에 종료 신호 전송
+    worker.send('shutdown');
+
+    // 종료 타임아웃 설정
+    setTimeout(() => {
+      if (!worker.isDead()) {
+        console.log(
+          `[INFO] 워커 ${worker.process.pid}가 ${
+            CONFIG.WORKER_SHUTDOWN_TIMEOUT / 1000
+          }초 내에 종료되지 않아 강제 종료합니다`
+        );
+        worker.process.kill('SIGTERM');
+
+        // SIGTERM 후에도 종료되지 않으면 SIGKILL
+        setTimeout(() => {
+          if (!worker.isDead()) {
+            console.log(
+              `[INFO] 워커 ${worker.process.pid}가 SIGTERM에 응답하지 않아 SIGKILL 신호를 보냅니다`
+            );
+            worker.process.kill('SIGKILL');
+          }
+        }, 5000);
+      }
+    }, CONFIG.WORKER_SHUTDOWN_TIMEOUT);
+  };
+
+  // 초기 워커 생성
+  for (let i = 0; i < CONFIG.WORKERS; i++) {
+    createWorker();
+  }
+
+  // 메모리 사용량 모니터링 함수
+  const checkMemoryUsage = () => {
+    // 워커들을 순차적으로 체크하여 부하 분산
+    Object.values(workers).forEach((worker, index) => {
+      // 종료 중인 워커는 체크하지 않음
+      if (worker.isShuttingDown) {
+        return;
+      }
+
+      setTimeout(() => {
+        if (!worker.isDead() && !worker.isShuttingDown) {
+          worker.send('checkMemory');
+        }
+      }, index * 1000); // 1초 간격으로 체크
+    });
+  };
+
+  // 주기적 메모리 사용량 체크
+  const memoryCheckInterval = setInterval(checkMemoryUsage, CONFIG.MEMORY_CHECK_INTERVAL);
+
+  // 워커로부터 메모리 사용량 정보 수신
+  cluster.on('message', (worker, message) => {
+    if (message.type === 'memoryUsage') {
+      const memoryUsage = message.usage;
+      const memoryGB = memoryUsage / (1024 * 1024 * 1024);
+      const workerId = worker.id;
+
+      // 워커 메모리 사용량 기록 초기화 (필요시)
+      if (!workerMemoryUsage[workerId]) {
+        workerMemoryUsage[workerId] = {
+          highMemoryStartTime: null,
+          isHighMemory: false,
+        };
+      }
+
+      // 메모리 임계값 초과 시 처리
+      if (memoryUsage > CONFIG.MEMORY_LIMIT * CONFIG.MEMORY_CHECK_THRESHOLD) {
+        console.warn(
+          `[WARN] 워커 ${worker.process.pid}의 메모리 사용량이 높습니다 (${memoryGB.toFixed(2)} GB)`
+        );
+
+        // 높은 메모리 사용량 시작 시간 기록
+        if (!workerMemoryUsage[workerId].isHighMemory) {
+          workerMemoryUsage[workerId].isHighMemory = true;
+          workerMemoryUsage[workerId].highMemoryStartTime = Date.now();
+        }
+
+        // 높은 메모리 사용량이 지속된 시간 확인
+        const highMemoryDuration = Date.now() - workerMemoryUsage[workerId].highMemoryStartTime;
+
+        // 메모리 제한 초과 또는 임계값을 10분 이상 초과한 경우 워커 교체
+        if (
+          memoryUsage > CONFIG.MEMORY_LIMIT ||
+          (highMemoryDuration >= CONFIG.MEMORY_HIGH_DURATION_THRESHOLD && !worker.isShuttingDown)
+        ) {
+          const reason =
+            memoryUsage > CONFIG.MEMORY_LIMIT
+              ? `메모리 제한(${(CONFIG.MEMORY_LIMIT / (1024 * 1024 * 1024)).toFixed(2)} GB)을 초과`
+              : `메모리 사용량이 임계값을 ${
+                  CONFIG.MEMORY_HIGH_DURATION_THRESHOLD / 60000
+                }분 이상 초과`;
+
+          console.warn(
+            `[WARN] 워커 ${worker.process.pid}가 ${reason}했습니다: ${memoryGB.toFixed(2)} GB`
+          );
+
+          // 시스템 메모리가 충분한지 확인
+          const freeMem = os.freemem();
+          if (freeMem > CONFIG.MEMORY_LIMIT * 1.5) {
+            // 새 워커 생성 후 기존 워커 종료
+            createWorker();
+            setTimeout(() => {
+              terminateWorker(worker, reason);
+              delete workers[worker.id];
+              delete workerCpuUsage[worker.id];
+              delete workerMemoryUsage[worker.id];
+            }, 5000); // 새 워커가 초기화될 시간 제공
+          } else {
+            console.warn(
+              `[WARN] 시스템 메모리가 부족하여 새 워커 생성 없이 기존 워커를 재시작합니다`
+            );
+            terminateWorker(worker, reason + ' 및 시스템 메모리 부족');
+
+            // 10초 후 새 워커 생성 (기존 워커 종료 후)
+            setTimeout(() => {
+              if (worker.isDead()) {
+                delete workers[worker.id];
+                delete workerCpuUsage[worker.id];
+                delete workerMemoryUsage[worker.id];
+                createWorker();
+              }
+            }, 10000);
+          }
+        }
+      } else {
+        // 메모리 사용량이 정상으로 돌아오면 상태 초기화
+        if (workerMemoryUsage[workerId]?.isHighMemory) {
+          console.log(
+            `[INFO] 워커 ${
+              worker.process.pid
+            }의 메모리 사용량이 정상으로 돌아왔습니다 (${memoryGB.toFixed(2)} GB)`
+          );
+          workerMemoryUsage[workerId].isHighMemory = false;
+          workerMemoryUsage[workerId].highMemoryStartTime = null;
+        }
+      }
+    } else if (message.type === 'cpuUsage') {
+      const cpuUsage = message.usage;
+      const workerId = worker.id;
+
+      // CPU 사용량 기록 저장
+      if (!workerCpuUsage[workerId]) {
+        workerCpuUsage[workerId] = {
+          highCpuStartTime: null,
+          samples: [],
+          isHighCpu: false,
+        };
+      }
+
+      // 최근 5개 샘플만 유지 (이동 평균에 사용)
+      workerCpuUsage[workerId].samples.push(cpuUsage);
+      if (workerCpuUsage[workerId].samples.length > 5) {
+        workerCpuUsage[workerId].samples.shift();
+      }
+
+      // 이동 평균 계산
+      const avgCpuUsage =
+        workerCpuUsage[workerId].samples.reduce((sum, val) => sum + val, 0) /
+        workerCpuUsage[workerId].samples.length;
+
+      // CPU 사용량이 임계값 이상인지 확인
+      if (avgCpuUsage >= CONFIG.CPU_THRESHOLD) {
+        // 높은 CPU 사용량 시작 시간 기록
+        if (!workerCpuUsage[workerId].isHighCpu) {
+          workerCpuUsage[workerId].isHighCpu = true;
+          workerCpuUsage[workerId].highCpuStartTime = Date.now();
+          console.warn(
+            `[WARN] 워커 ${worker.process.pid}의 CPU 사용량이 높습니다 (${(
+              avgCpuUsage * 100
+            ).toFixed(2)}%)`
+          );
+        }
+
+        // 높은 CPU 사용량이 지속된 시간 확인
+        const highCpuDuration = Date.now() - workerCpuUsage[workerId].highCpuStartTime;
+
+        // 지정된 시간보다 오래 지속되었는지 확인
+        if (highCpuDuration >= CONFIG.CPU_HIGH_DURATION_THRESHOLD && !worker.isShuttingDown) {
+          console.warn(
+            `[WARN] 워커 ${worker.process.pid}의 CPU 사용량이 ${(avgCpuUsage * 100).toFixed(
+              2
+            )}%로 ${CONFIG.CPU_HIGH_DURATION_THRESHOLD / 60000}분 이상 지속되어 재시작합니다`
+          );
+
+          // 새 워커 생성 후 기존 워커 종료
+          createWorker();
+          setTimeout(() => {
+            terminateWorker(worker, '높은 CPU 사용량 지속');
+            delete workers[worker.id];
+            delete workerCpuUsage[worker.id];
+            delete workerMemoryUsage[worker.id];
+          }, 5000); // 새 워커가 초기화될 시간 제공
+        }
+      } else {
+        // CPU 사용량이 정상으로 돌아오면 상태 초기화
+        if (workerCpuUsage[workerId].isHighCpu) {
+          console.log(
+            `[INFO] 워커 ${worker.process.pid}의 CPU 사용량이 정상으로 돌아왔습니다 (${(
+              avgCpuUsage * 100
+            ).toFixed(2)}%)`
+          );
+          workerCpuUsage[workerId].isHighCpu = false;
+          workerCpuUsage[workerId].highCpuStartTime = null;
+        }
+      }
+    } else if (message.type === 'ready') {
+      console.log(`[INFO] 워커 ${worker.process.pid}가 요청 처리 준비 완료`);
+    }
+  });
+
+  // 워커 종료 이벤트 처리
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(
+      `[INFO] 워커 ${worker.process.pid}가 종료되었습니다 (코드: ${code}, 신호: ${
+        signal || 'NONE'
+      })`
+    );
+
+    // 워커 객체에서 제거
+    delete workers[worker.id];
+    delete workerCpuUsage[worker.id];
+    delete workerMemoryUsage[worker.id];
+
+    // 예기치 않은 종료인 경우에만 새 워커 생성
+    if (code !== 0 && !worker.exitedAfterDisconnect && !worker.isShuttingDown) {
+      console.log(`[INFO] 워커 ${worker.process.pid}가 예기치 않게 종료되어 새 워커를 시작합니다`);
+
+      // 즉시 재시작하지 않고 약간의 딜레이 추가
+      setTimeout(() => {
+        createWorker();
+      }, 1000);
+    }
+  });
+
+  // CPU 사용량 모니터링 함수
+  const checkCpuUsage = () => {
+    // 워커들을 순차적으로 체크하여 부하 분산
+    Object.values(workers).forEach((worker, index) => {
+      // 종료 중인 워커는 체크하지 않음
+      if (worker.isShuttingDown) {
+        return;
+      }
+
+      setTimeout(() => {
+        if (!worker.isDead() && !worker.isShuttingDown) {
+          worker.send('checkCpu');
+        }
+      }, index * 1000); // 1초 간격으로 체크
+    });
+  };
+
+  // 주기적 CPU 사용량 체크
+  const cpuCheckInterval = setInterval(checkCpuUsage, CONFIG.CPU_CHECK_INTERVAL);
+
+  // 정상적인 종료 처리
+  const gracefulShutdown = (reason) => {
+    console.log(`[INFO] 메인 프로세스가 종료를 시작합니다... (사유: ${reason})`);
+
+    // 메모리 체크 중지
+    clearInterval(memoryCheckInterval);
+    // CPU 체크 중지
+    clearInterval(cpuCheckInterval);
+
+    // 새로운 워커 생성 방지
+    cluster.removeAllListeners('exit');
+
+    // 워커 수 확인
+    const workerCount = Object.keys(workers).length;
+    console.log(`[INFO] 종료할 워커 수: ${workerCount}`);
+
+    if (workerCount === 0) {
+      console.log('[INFO] 활성 워커가 없습니다. 즉시 종료합니다.');
+      process.exit(0);
+      return;
+    }
+
+    // 모든 워커에 종료 메시지 전송
+    let terminatedCount = 0;
+
+    Object.values(workers).forEach((worker) => {
+      if (!worker.isDead() && !worker.isShuttingDown) {
+        worker.on('exit', () => {
+          terminatedCount++;
+          console.log(`[INFO] 워커 종료 진행 중: ${terminatedCount}/${workerCount}`);
+
+          if (terminatedCount >= workerCount) {
+            console.log(
+              '[INFO] 모든 워커가 성공적으로 종료되었습니다. 메인 프로세스를 종료합니다.'
+            );
+            process.exit(0);
+          }
+        });
+
+        terminateWorker(worker, reason);
+      } else {
+        terminatedCount++;
+      }
+    });
+
+    // 최대 대기 시간 설정 (30초)
+    setTimeout(() => {
+      console.warn(
+        '[WARN] 일부 워커가 정상적으로 종료되지 않았지만, 최대 대기 시간에 도달했습니다. 강제 종료합니다.'
+      );
+      process.exit(1);
+    }, 30000);
+  };
+
+  // 종료 신호 처리
+  ['SIGINT', 'SIGTERM', 'SIGQUIT'].forEach((signal) => {
+    process.on(signal, () => {
+      console.log(`[INFO] \n메인 프로세스가 ${signal} 신호를 수신했습니다`);
+      gracefulShutdown(`시그널 ${signal} 수신`);
+    });
+  });
+
+  // 예기치 않은 오류 처리
+  process.on('uncaughtException', (err) => {
+    console.error('[ERROR] 메인 프로세스에서 예기치 않은 오류가 발생했습니다:', err);
+    gracefulShutdown('메인 프로세스 예외 발생');
+  });
+
+  // 프로세스 경고 처리
+  process.on('warning', (warning) => {
+    console.warn('[WARN] 메인 프로세스 경고:', warning.name, warning.message);
+  });
+
+  // 정기적인 상태 보고
+  setInterval(() => {
+    const uptime = process.uptime();
+    const days = Math.floor(uptime / 86400);
+    const hours = Math.floor((uptime % 86400) / 3600);
+    const minutes = Math.floor((uptime % 3600) / 60);
+
+    console.log(`[INFO] 클러스터 가동 시간: ${days}일 ${hours}시간 ${minutes}분`);
+    console.log(`[INFO] 활성 워커 수: ${Object.keys(workers).length}/${CONFIG.WORKERS}`);
+  }, 3600000); // 1시간마다 보고
+} else {
+  // 워커 프로세스 코드
+  console.log(`[INFO] Miricanvas Design 워커 프로세스 ${process.pid}가 실행되었습니다`);
+
+  // CPU 사용량 계산을 위한 이전 측정값
+  let previousCpuUsage = process.cpuUsage();
+  let previousTimestamp = Date.now();
+
+  // 워커 준비 상태 전송
+  setTimeout(() => {
+    process.send({ type: 'ready' });
+  }, 1000);
+
+  // 프로세스 간 통신 처리
+  process.on('message', (msg) => {
+    if (msg === 'checkMemory') {
+      // 실제 메모리 사용량 측정 (RSS: Resident Set Size)
+      const memoryUsage = process.memoryUsage();
+      process.send({
+        type: 'memoryUsage',
+        usage: memoryUsage.rss,
+        details: {
+          heapTotal: memoryUsage.heapTotal,
+          heapUsed: memoryUsage.heapUsed,
+          external: memoryUsage.external,
+          arrayBuffers: memoryUsage.arrayBuffers,
+        },
+      });
+    } else if (msg === 'checkCpu') {
+      // 현재 CPU 사용량 측정
+      const currentCpuUsage = process.cpuUsage();
+      const currentTimestamp = Date.now();
+
+      // 경과 시간 (마이크로초)
+      const elapsedTime = (currentTimestamp - previousTimestamp) * 1000;
+
+      // CPU 시간 계산 (마이크로초)
+      const userCpuDiff = currentCpuUsage.user - previousCpuUsage.user;
+      const sysCpuDiff = currentCpuUsage.system - previousCpuUsage.system;
+      const totalCpuTime = userCpuDiff + sysCpuDiff;
+
+      // CPU 사용률 계산 (코어 1개당 100% 기준)
+      const cpuUsage = totalCpuTime / elapsedTime;
+
+      process.send({
+        type: 'cpuUsage',
+        usage: cpuUsage,
+        details: {
+          user: userCpuDiff / elapsedTime,
+          system: sysCpuDiff / elapsedTime,
+          timestamp: currentTimestamp,
+        },
+      });
+
+      // 다음 측정을 위해 값 업데이트
+      previousCpuUsage = currentCpuUsage;
+      previousTimestamp = currentTimestamp;
+    } else if (msg === 'shutdown') {
+      console.log(`[INFO] 워커 ${process.pid}가 종료 신호를 수신했습니다`);
+
+      // 진행 중인 연결 완료를 위한 정리 작업
+      let cleanupTimeout;
+
+      // 서버가 있는 경우 종료 처리
+      if (global.server && typeof global.server.close === 'function') {
+        console.log(`[INFO] 워커 ${process.pid}가 HTTP 서버 연결을 정상 종료 중...`);
+
+        // 새로운 연결 거부하고 기존 연결 종료 대기
+        cleanupTimeout = setTimeout(() => {
+          console.log(
+            `[INFO] 워커 ${process.pid}가 정리 제한 시간에 도달했습니다. 강제 종료합니다.`
+          );
+          process.exit(0);
+        }, 10000);
+
+        global.server.close(() => {
+          console.log(`[INFO] 워커 ${process.pid}의 모든 연결이 정상적으로 종료되었습니다`);
+          clearTimeout(cleanupTimeout);
+          process.exit(0);
+        });
+      } else {
+        // 서버 객체가 없는 경우 즉시 종료
+        console.log(
+          `[INFO] 워커 ${process.pid}에서 종료할 서버를 찾지 못했습니다. 즉시 종료합니다.`
+        );
+        process.exit(0);
+      }
+    }
+  });
+
+  // 워커 프로세스의 예외 처리
+  process.on('uncaughtException', (err) => {
+    console.error(`[ERROR] 워커 ${process.pid}에서 처리되지 않은 예외 발생:`, err);
+
+    // 오류 정보를 메인 프로세스에 보고
+    try {
+      process.send({
+        type: 'error',
+        error: {
+          message: err.message,
+          stack: err.stack,
+          name: err.name,
+        },
+      });
+    } catch (e) {
+      console.error(`[ERROR] 워커 ${process.pid}에서 오류 보고 실패:`, e);
+    }
+
+    // 예외 발생 시 워커 종료 (5초 후 정상적으로 종료)
+    setTimeout(() => {
+      process.exit(1);
+    }, 5000);
+  });
+
+  // 워커 프로세스 경고 처리
+  process.on('warning', (warning) => {
+    console.warn(`[WARN] 워커 ${process.pid} 경고:`, warning.name, warning.message);
+  });
+}
+```
+
+위 코드에는 다음과 같은 기능이 반영되어 있어요.
+1. **워커 프로세스 관리** 🔄
+   - 메인 프로세스가 CPU 코어 수에 맞게 워커 프로세스를 생성하고 관리합니다.
+   - 워커 프로세스가 종료되면 자동으로 새 워커를 생성하여 안정성을 유지합니다.
+
+2. **자원 모니터링** 📊
+   - CPU 및 메모리 사용량을 주기적으로 모니터링합니다.
+   - 설정된 임계값(기본 70%)을 초과하면 경고를 기록하고 필요시 워커를 재시작합니다.
+
+3. **정상 종료 처리** 🛑
+   - 종료 신호(SIGTERM, SIGINT)를 받으면 진행 중인 연결을 정상적으로 종료합니다.
+   - 정해진 시간(기본 15초) 내에 정상 종료되지 않으면 강제 종료합니다.
+
+4. **오류 처리 및 복구** 🔧
+   - 처리되지 않은 예외가 발생하면 로그를 기록하고 메인 프로세스에 보고합니다.
+   - 오류 발생 시 워커를 안전하게 종료하고 새 워커로 대체합니다.
+
+5. **로깅 시스템** 📝
+   - 시스템 상태, 워커 상태, 오류 등을 상세히 기록합니다.
+   - 문제 발생 시 디버깅에 필요한 정보를 제공합니다.
+
+## 결과
+기존에는 1vCPU, 2GiB Memory의 Fargate Task가 수십개 운영되고 있어 관리할 포인트가 많아졌었는데
+4vCPU, 8GiB Memory로 Scale Up 하고, Task를 최소 3개로 Scale In 하면서 관리할 포인트가 줄어들었습니다.
+기존에는 1개의 Task당 1개의 Next.js Application이 실행되다보니 Next.js Application 1개가 맛탱이가면
+바로 UnHealthy Host가 되어버리고 새로운 Task가 실행되고 Health Check를 통과하는 몇분동안 다른 곳으로 부하가 집중되며 우르르 무너지는 연쇄작용이 있어 전체적인 서비스의 Latency가 증가하고
+502 Error가 발생하는 등의 현상이 발생하였는데 Cluster 내부에서 바로 재시작하니 DownTime도 줄어들고 전체적인 시스템의 안정성이 증가되었습니다.

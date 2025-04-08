@@ -21,7 +21,7 @@ export const Heading = ({
     <Tag
       className={twMerge(
         AppleSDGothic.className,
-        "text-base md:text-xl lg:text-4xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary",
+        "text-base md:text-xl lg:text-4xl font-semibold bg-clip-text text-transparent text-gray-900 from-primary to-secondary",
         className,
       )}
     >

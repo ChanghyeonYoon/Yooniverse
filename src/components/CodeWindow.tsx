@@ -2,27 +2,32 @@
 
 import React, { useEffect, Children, useState, useRef } from "react";
 import Prism from "prismjs";
+import "prismjs/components/prism-javascript";
+import "prismjs/components/prism-typescript";
+import "prismjs/components/prism-jsx";
+import "prismjs/components/prism-tsx";
 
 import clsx from "clsx";
 
-export const CodeWindow = ({ title, children }: any) => {
+export const CodeWindow = ({ title, children, language = "js" }: any) => {   
   const [isClient, setIsClient] = useState(false);
+  const codeRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+  
   useEffect(() => {
-    Prism.highlightAll();
-  }, []);
-
-  let child = Children.only(children);
+    if (isClient && codeRef.current) {
+      Prism.highlightElement(codeRef.current);
+    }
+  }, [isClient, children]);
 
   const [buttonText, setButtonText] = useState("Copy");
-  const childRef = useRef<any>(null);
 
   const handleClick = (e: any) => {
-    if (childRef.current) {
-      const textToCopy = childRef.current.innerText;
+    if (codeRef.current) {
+      const textToCopy = codeRef.current.textContent || "";
 
       navigator.clipboard
         .writeText(textToCopy)
@@ -77,7 +82,14 @@ export const CodeWindow = ({ title, children }: any) => {
           </button>
         </div>
 
-        <code ref={childRef} className="language-typescript">{children}</code>
+        <pre className="m-0 p-4 overflow-auto text-sm">
+          <code 
+            ref={codeRef} 
+            className={`language-${language}`} 
+          >
+            {children}
+          </code>
+        </pre>
       </div>
     )
   );
