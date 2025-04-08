@@ -277,7 +277,7 @@ const logSystemStatus = () => {
 
 if (cluster.isPrimary) {
   console.log(
-    `[INFO] Miricanvas Design 메인 프로세스 ${process.pid}가 실행 중입니다. 설정된 최대 워커 수: ${
+    `[INFO] 메인 프로세스 ${process.pid}가 실행 중입니다. 설정된 최대 워커 수: ${
       CONFIG.WORKERS
     } (사용 가능한 CPU: ${cpus().length})`
   );
