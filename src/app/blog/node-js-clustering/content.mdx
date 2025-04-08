@@ -694,7 +694,7 @@ if (cluster.isPrimary) {
   }, 3600000); // 1시간마다 보고
 } else {
   // 워커 프로세스 코드
-  console.log(`[INFO] Miricanvas Design 워커 프로세스 ${process.pid}가 실행되었습니다`);
+  console.log(`[INFO] 워커 프로세스 ${process.pid}가 실행되었습니다`);
 
   // CPU 사용량 계산을 위한 이전 측정값
   let previousCpuUsage = process.cpuUsage();
