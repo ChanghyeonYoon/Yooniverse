@@ -1,0 +1,19 @@
+import { BlogLayout } from "@/src/components/BlogLayout";
+
+import Thumbnail from "@/src/app/blog/node-js-clustering/images/thumbnail.png";
+
+export const meta = {
+  date: "2025-04-08",
+  title: "Cluster Mode를 통해 Next.js를 효과적으로 운영하는 방법",
+  description:
+    "Node.js로 작동하는 Next.js 특성 상 기본적으로 싱글스레드로 작동합니다. 이 글에서는 Node.js의 Cluster Module과 PM2 Cluster Mode에 대해 각각 알아보겠습니다.",
+  image:
+  Thumbnail.src,
+  tags: ["Next.js", "Node.js", "Cluster", "PM2", "Fargate", "Load Balancing"],
+};
+
+export default (props) => <BlogLayout meta={meta} {...props} />;
+
+작성중...
+
+

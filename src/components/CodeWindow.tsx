@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, Children, useState, useRef } from "react";
+import Prism from "prismjs";
 
-// import "prism-theme-night-owl";
 import clsx from "clsx";
 
 export const CodeWindow = ({ title, children }: any) => {
@@ -12,7 +12,7 @@ export const CodeWindow = ({ title, children }: any) => {
     setIsClient(true);
   }, []);
   useEffect(() => {
-    // Prism.highlightAll();
+    Prism.highlightAll();
   }, []);
 
   let child = Children.only(children);
@@ -77,7 +77,7 @@ export const CodeWindow = ({ title, children }: any) => {
           </button>
         </div>
 
-        <div ref={childRef}>{children}</div>
+        <code ref={childRef} className="language-typescript">{children}</code>
       </div>
     )
   );

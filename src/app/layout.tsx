@@ -7,6 +7,7 @@ import { Sidebar } from "@/src/components/Sidebar";
 import { prefix } from "@/src/constants/prefix";
 
 import "./globals.css";
+import "./prism-theme-night-owl.css";
 
 export const metadata: Metadata = {
   ...DefaultMetadata,
