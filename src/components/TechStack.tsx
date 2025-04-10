@@ -7,9 +7,9 @@ import { Heading } from "./Heading";
 const FrontendStack = ["JavaScript", "TypeScript", "React", "Next.js", "React-Native", "Dart", "Flutter", "Swift"];
 const InfrastructureStack = [
   "Vercel",
-  "AWS - Solutions Architect Associate",
-  "Azure - Microsoft Learn Student Ambassador",
-  "Datadog - Datadog Ambassador",
+  "AWS",
+  "Azure",
+  "Datadog",
 ];
 
 export const TechStack = () => {

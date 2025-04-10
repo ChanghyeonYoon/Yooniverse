@@ -47,7 +47,7 @@ export default async function Home() {
         이라는 철학으로 개발하고 있습니다.
       </Paragraph>
 
-      <Heading as='h2' className='font-black text-lg md:text-lg lg:text-lg mt-20 mb-4'>
+      <Heading as='p' className='font-black text-lg md:text-lg lg:text-lg mt-20 mb-4'>
         Recent Posts
       </Heading>
       <Blogs blogs={data} />

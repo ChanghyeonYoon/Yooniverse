@@ -31,10 +31,10 @@ export async function GET() {
 
   // blogs.map((post: any) => {
   //   feed.item({
-  //     title: post.제목,
-  //     description: post.내용,
-  //     url: post.주소,
-  //     date: post.등록일자,
+  //     title: post.title,
+  //     description: post.description,
+  //     url: `${DefaultOpenGraph.url}/blog/${post.slug}`,
+  //     date: new Date(post.created_at),
   //   });
   // });
 

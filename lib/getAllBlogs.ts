@@ -13,6 +13,7 @@ async function importBlog(blogFileNames: any) {
 export async function getAllBlogs() {
   let blogFileNames = await glob(["*.mdx", "*/content.mdx"], {
     cwd: path.join(process.cwd(), "src/app/blog"),
+    
   });
 
   let blogs = await Promise.all(blogFileNames.map(importBlog));

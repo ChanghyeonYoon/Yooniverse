@@ -63,11 +63,10 @@ export const Blogs = ({ blogs }: { blogs: Blog[] }) => {
                 alt='thumbnail'
                 height='200'
                 width='200'
-                objectFit='cover'
                 className='rounded-md object-contain h-40 w-60 max-lg:w-full bg-gray-100 hover:bg-gray-200'
               />
               <div className='flex flex-col col-span-3'>
-                <Heading className='text-lg md:text-lg lg:text-lg'>{blog.title}</Heading>
+                <Heading as='p' className='text-lg md:text-lg lg:text-lg'>{blog.title}</Heading>
                 <Paragraph className='text-sm md:text-sm lg:text-sm mt-2'>{blog.description}</Paragraph>
                 <div className='flex space-x-2 flex-wrap mt-4'>
                   {blog.tags?.map((tag, index) => (
